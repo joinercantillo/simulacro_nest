@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsEnum, IsNotEmpty, IsString, MaxLength } from "class-validator"
+import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUUID, MaxLength } from "class-validator"
 import { CustomerStatus } from "../entities/statusCustomer.js"
 
 
@@ -26,6 +26,15 @@ export class CreateCustomerDto {
     lastname:string
 
     @ApiProperty({
+        description: 'Customer email',
+        type: String,
+        example: 'a@a.com'
+    })
+    @IsEmail()
+    @IsNotEmpty()
+    email: string
+
+    @ApiProperty({
         description: 'customer name',
         type:String,
         example: 'Juancho'
@@ -34,8 +43,13 @@ export class CreateCustomerDto {
     @IsNotEmpty()
     @MaxLength(100)
     status:string
-
-    
-    country:string
+@ApiProperty({
+        description: 'Country UUID reference',
+        type: String,
+        example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+    })
+    @IsUUID()
+    @IsNotEmpty()
+    idCountry: string; // Cambiado de 'country' a 'idCountry' para hacer match con la entidad
 
 }

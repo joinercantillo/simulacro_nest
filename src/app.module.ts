@@ -7,6 +7,7 @@ import { envValidationSchema } from './config/env.validation.schema.js';
 import {TypeOrmModule } from '@nestjs/typeorm';
 import { HealthModule } from './modules/health/health.module.js';
 import { CountriesModule } from './modules/countries/countries.module.js';
+import { CustomerModule } from './modules/customer/customer.module.js';
 
 
 
@@ -28,7 +29,8 @@ import { CountriesModule } from './modules/countries/countries.module.js';
 
     }),
     HealthModule,
-    CountriesModule
+    CountriesModule,
+    CustomerModule
   ],
 
   controllers: [AppController],

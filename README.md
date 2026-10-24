@@ -1,3 +1,5 @@
+configuracion del entorno de nest, interceptors, filter exception, basede datos, decoradores personalizados
+
 # Restaurant API
 
 Backend para gestión de reservas, pedidos y operación de un restaurante.

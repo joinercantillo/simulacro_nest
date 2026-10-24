@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity.js';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { CustomerStatus } from './entities/statusCustomer.js';
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -14,30 +16,41 @@ export class CustomerService {
     private readonly customerRepository: Repository<Customer>
   ){}
 
-  async create(dto: CreateCustomerDto) {
-    const name = dto.name.trim();
-    const lastname = dto.lastname.trim();
-    const cityID = dto.idCountry.trim();
-    const existingCostumer = await this.customerRepository.findOneBy({ email: dto.email })
+async create(dto: CreateCustomerDto) {
+    const CustomerName = dto.CustomerName.trim();
+    const Customerlastname = dto.Customerlastname.trim();
+    const email = dto.email.trim();
+    const cityName = dto.countryNAME.trim();
+    const status = dto.status
+    // Verificamos si ya existe con el email limpio
+    const existingCostumer = await this.customerRepository.findOneBy({ email });
     
     if (existingCostumer) {
       throw new ConflictException(
-       `Couentry with name "${dto.email}" already exists` 
-      )
+       `Customer with email "${email}" already exists` 
+      );
     }
+
+    const hashPassword = await bcrypt.hash(dto.password, 10);
 
     const customer = this.customerRepository.create({
       ...dto,
-      id: uuidv4(),
-      name,
-      lastname,
-      
-    })
+      CustomerName,
+      Customerlastname,
+      email,
+      countryNAME: cityName,
+      status :status as CustomerStatus,
+      password:hashPassword
+    });
 
-    return 'This action adds a new customer';
+    try {
+      return await this.customerRepository.save(customer);
+    } catch (error) {
+      throw error; 
+    }
   }
 
-  findAll(): Promise<Customer[]> {
+  async findAll(): Promise<Customer[]> {
     return this.customerRepository.find({ order: { id: 'ASC'}}); 
   }
 

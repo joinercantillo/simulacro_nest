@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUUID, MaxLength } from "class-validator"
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsStrongPassword, IsUUID, MaxLength } from "class-validator"
 import { CustomerStatus } from "../entities/statusCustomer.js"
+import { Column } from "typeorm"
 
 
 export class CreateCustomerDto {
@@ -13,7 +14,7 @@ export class CreateCustomerDto {
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
-    name:string
+    CustomerName:string
 
     @ApiProperty({
         description: 'customer lastname',
@@ -23,7 +24,7 @@ export class CreateCustomerDto {
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
-    lastname:string
+    Customerlastname:string
 
     @ApiProperty({
         description: 'Customer email',
@@ -34,22 +35,20 @@ export class CreateCustomerDto {
     @IsNotEmpty()
     email: string
 
-    @ApiProperty({
-        description: 'customer name',
-        type:String,
-        example: 'Juancho'
-    })
-    @IsEnum(CustomerStatus)
+    @IsStrongPassword()
+    @IsString()
     @IsNotEmpty()
-    @MaxLength(100)
-    status:string
-@ApiProperty({
-        description: 'Country UUID reference',
-        type: String,
-        example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+    password: string
+
+    @Column({
+    type: 'varchar',
+    length: 20,
+    default: CustomerStatus.ACTIVE,
     })
-    @IsUUID()
-    @IsNotEmpty()
-    idCountry: string; // Cambiado de 'country' a 'idCountry' para hacer match con la entidad
+    @IsOptional()
+    status?:CustomerStatus
+    
+    @Column({})
+    countryNAME:string
 
 }

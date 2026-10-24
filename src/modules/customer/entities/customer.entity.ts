@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, Primary
 import { CustomerStatus } from "./statusCustomer.js";
 import { ApiProperty } from "@nestjs/swagger";
 import { Country } from "../../countries/entities/country.entity.js";
-import { IsEmail } from "class-validator";
+import { IsEmail, IsOptional, IsStrongPassword } from "class-validator";
 
 @Entity('customers') // Nombre de tu tabla en la base de datos
 export class Customer {
@@ -13,13 +13,25 @@ export class Customer {
 
   @ApiProperty({ description: 'Customer name' })
   @Column({ type: 'varchar', length: 100 })
-  name: string;
+  CustomerName: string;
+
+  @ApiProperty({ description: 'Customer name' })
+  @Column({ type: 'varchar', length: 100 })
+  Customerlastname: string
+
 
   @ApiProperty({ description: 'Customer email' })
   @Column({ unique: true })
   @IsEmail()
   email: string;
 
+
+  @ApiProperty({ description: 'customer password'})
+  @Column()
+  @IsStrongPassword()
+  password: string
+
+  
   @ApiProperty({
     enum: CustomerStatus,
     example: CustomerStatus.ACTIVE,
@@ -30,7 +42,8 @@ export class Customer {
     enum: CustomerStatus,
     default: CustomerStatus.ACTIVE,
   })
-  status: CustomerStatus;
+  @IsOptional()
+  status?: CustomerStatus;
 
   @ApiProperty({ description: 'Customer country' })
   @ManyToOne(() => Country, { eager: true, onDelete: 'RESTRICT' })
@@ -41,12 +54,18 @@ export class Customer {
   @Column({ name: 'idCountry' }) // Nombre exacto de la columna física en la BD que almacena la FK
   idCountry: string;
 
+  @JoinColumn({ name: 'countryNAME'})
+  @ManyToOne(() => Country, {eager:true, onDelete: 'RESTRICT'})
+  @ApiProperty({ description: 'Country name' })
+  @Column({ name: 'name' }) // Nombre exacto de la columna física en la BD que almacena la FK
+  countryNAME: string;
+
   @ApiProperty({ description: 'Creation timestamp' })
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @ApiProperty({ description: 'Update timestamp' })
   @UpdateDateColumn({ type: 'timestamptz' })
-  updatedAt: Date;;
+  updatedAt: Date;
 
 }
